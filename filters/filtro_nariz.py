@@ -12,5 +12,6 @@ class FiltroNariz(BaseFilter):
         face_landmark = landmarks[0].landmark
         nose_landmark = face_landmark[1]
         x, y = self.face_detector.landmark_to_coordinate(frame, nose_landmark)
+        # cordenas y foma del punto de la nariz
         cv2.circle(frame, (x, y), 8, (0, 0, 250), -1)
         return frame
