@@ -9,14 +9,11 @@ class MustacheFilter(BaseFilter):
     def __init__(self, facedetector, png_path=None, offset_x=0, offset_y=0, target=140):
         self.face_detector = facedetector
         if png_path is None:
-            png_path = Path(__file__).resolve().parent.parent / "assets" / "bigote1.png"
+            png_path = Path(__file__).resolve().parent.parent / "assets" / "Bigote.png"
 
         self.mustache_image = cv2.imread(str(png_path), cv2.IMREAD_UNCHANGED)
         if self.mustache_image is None:
             raise FileNotFoundError(f"No se encontró la imagen del bigote en {png_path}")
-
-        if self.mustache_image.ndim == 2:
-            self.mustache_image = cv2.cvtColor(self.mustache_image, cv2.COLOR_GRAY2BGR)
 
         self.offset_x = offset_x
         self.offset_y = offset_y
@@ -81,20 +78,21 @@ class MustacheFilter(BaseFilter):
 
         crop = bigote[ry1:ry2,rx1:rx2]
 
-        if crop.size == 0 or crop.ndim < 3:
-            return
-
+        #Separemos RGB de A
         rgb = crop[..., :3].astype(np.float32)
-        # Mascara por RGB: pixeles casi blancos se tratan como fondo
-        alpha = (np.max(rgb, axis=2, keepdims=True) < 245).astype(np.float32)
-        blended = alpha * rgb + (1.0 - alpha) * roi
+        roi_f = roi.astype(np.float32)
 
+        if crop.shape[2] >= 4:
+            alpha = crop[..., 3:4].astype(np.float32) / 255.0
+        else:
+            # Si no hay canal alpha, usa opacidad total
+            alpha = np.ones((crop.shape[0], crop.shape[1], 1), dtype=np.float32)
+
+        blended = alpha * rgb + (1.0 - alpha) * roi_f
         roi[:] = blended.astype(np.uint8)
 
 
 
-        
-        
 
 
 
@@ -102,8 +100,9 @@ class MustacheFilter(BaseFilter):
 
 
 
-        
 
-        
-    
-    
+
+
+
+
+
