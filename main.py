@@ -12,8 +12,20 @@ def main():
     print("Cámaras detectadas:")
     print("  ", " ".join(str(cam) for cam in cameras))
 
-    choice = input("Elige el número de la cámara (enter = primera): ").strip()
-    selected = cameras[0] if choice == "" else int(choice)
+    try:
+        choice = input("Elige el número de la cámara (enter = primera): ").strip()
+    except EOFError:
+        print("Entrada no interactiva detectada. Se usará la primera cámara.")
+        choice = ""
+
+    if choice == "":
+        selected = cameras[0]
+    else:
+        try:
+            selected = int(choice)
+        except ValueError:
+            print(f"Entrada inválida: '{choice}'. Debes escribir un número.")
+            return
 
     if selected not in cameras:
         print(f"Cámara {selected} no está en la lista.")
