@@ -32,19 +32,19 @@ class FaceDetection:
         self.drawing_utils = mp.solutions.drawing_utils
     
     def detect_face(self,image):
-        # Cambia de BGR a RGB -> OpenCV nos da la imagen en BGR
+        # Cambiar de BGR a RGB -> OpenCV nos da la imagen en BGR
         rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        # Guarda el resultado del procesamiento del módulo FaceMesh
+        # Guardamos el resultado del procesamiento del módulo FaceMesh
         results = self.face_mesh.process(rgb_image)
 
-        # Retorna las caras que detectamos
+        # Retornamos las caras que detectamos
         return results.multi_face_landmarks
 
     def draw_face(self,image):
-        # Revisa cuántas caras tenemos
+        # Captamos cuántas caras tenemos
         faces = self.detect_face(image)
-        # la imagen original no se afecta
+        # No afecta la imagen original
         out_img = image.copy()
 
         if faces is None:
@@ -73,4 +73,3 @@ class FaceDetection:
             coordinates.append((x,y))
 
         return coordinates
-
